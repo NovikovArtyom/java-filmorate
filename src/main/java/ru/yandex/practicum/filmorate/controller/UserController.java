@@ -31,7 +31,7 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         log.debug("Получен POST запрос на эндпоинт /users");
         user.setId(generateId());
-        if (user.getName().isBlank()) {
+        if ((user.getName() == null) || (user.getName().isBlank())) {
             log.debug("Поле name пустое");
             user.setName(user.getLogin());
         }
