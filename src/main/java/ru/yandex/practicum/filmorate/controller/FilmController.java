@@ -17,7 +17,7 @@ import java.util.Map;
 public class FilmController {
     private Map<Integer, Film> films = new HashMap<>();
     private int id;
-    private static final LocalDate CINEMA_DAY = LocalDate.of(1985, 12, 28);
+    private static final LocalDate CINEMA_DAY = LocalDate.of(1895, 12, 28);
 
     private int generateId() {
         this.id++;

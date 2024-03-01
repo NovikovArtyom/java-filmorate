@@ -17,5 +17,5 @@ public class Film {
     @Past
     private LocalDate releaseDate;
     @Positive
-    private double duration;
+    private int duration;
 }
