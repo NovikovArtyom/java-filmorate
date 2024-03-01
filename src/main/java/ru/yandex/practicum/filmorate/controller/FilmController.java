@@ -49,7 +49,6 @@ public class FilmController {
             log.debug("Данные фильма {} обновлены", film.getName());
             return film;
         } else
-            throw new ValidationException
-                    ("Фильм не зарегистрирован или указанная дата релиза раньше 28 декабря 1895 года!");
+            throw new ValidationException("Фильм не зарегистрирован или указанная дата релиза раньше 28 декабря 1895 года!");
     }
 }
