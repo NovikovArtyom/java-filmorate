@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.Collection;
 
 @Slf4j
