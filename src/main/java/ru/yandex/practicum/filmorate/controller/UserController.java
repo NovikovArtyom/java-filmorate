@@ -38,4 +38,6 @@ public class UserController {
         log.debug("Получен DELETE запрос на эндпоинт /users");
         userService.clearFilms();
     }
+
+
 }
