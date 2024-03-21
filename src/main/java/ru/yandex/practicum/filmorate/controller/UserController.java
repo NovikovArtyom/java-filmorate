@@ -2,23 +2,40 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.UserService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+    @Autowired
     private final UserService userService;
+
+    public UserController(UserService userService, InMemoryUserStorage userStorage) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public Collection<User> getUsers() {
-        return userService.getUsers();
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendList(@PathVariable long id) {
+        return userService.getFriendList(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@Valid @PathVariable long id, @Valid @PathVariable long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping
@@ -33,10 +50,22 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addToFriendList(@PathVariable long id, @PathVariable long friendId) {
+        log.debug("Получен PUT запрос на эндпоинт /users/{id}/friends/{friendId}");
+        return userService.addToFriendList(id, friendId);
+    }
+
     @DeleteMapping
     public void clearFilms() {
         log.debug("Получен DELETE запрос на эндпоинт /users");
-        userService.clearFilms();
+        userService.clearUsers();
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User deleteFromFriendList(@PathVariable long id, @PathVariable long friendId) {
+        log.debug("Получен DELETE запрос на эндпоинт /users/{id}/friends/{friendId}");
+        return userService.deleteFromFriendList(id, friendId);
     }
 
 

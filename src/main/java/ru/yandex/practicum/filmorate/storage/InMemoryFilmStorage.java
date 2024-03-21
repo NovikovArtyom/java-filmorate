@@ -1,7 +1,7 @@
-package ru.yandex.practicum.filmorate.services;
+package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ValidationException;
@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Service
-public class FilmService {
+@Component
+public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int id;
     private static final LocalDate CINEMA_DAY = LocalDate.of(1895, 12, 28);
