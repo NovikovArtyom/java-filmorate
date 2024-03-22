@@ -3,11 +3,9 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +23,7 @@ public class UserService {
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
+
     public User getUserById(long id) {
         User user = userStorage.getUserById(id);
         if (user != null) {
@@ -34,15 +33,19 @@ public class UserService {
         }
 
     }
+
     public User createUser(User user) {
         return userStorage.createUser(user);
     }
-    public User updateUser(User user){
+
+    public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
+
     public void clearUsers() {
         userStorage.clearUsers();
     }
+
     public List<User> getFriendList(long id) {
         List<User> friendList = new ArrayList<>();
         User user = userStorage.getUsers().get(id);

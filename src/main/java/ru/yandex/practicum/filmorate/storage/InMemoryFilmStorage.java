@@ -28,9 +28,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Collection<Film> getAllFilms() {
         return films.values();
     }
+
     public Film getFilmById(long id) {
         return films.get(id);
     }
+
     public Film createFilm(Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_DAY)) {
             film.setId(generateId());

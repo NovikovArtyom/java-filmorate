@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
-import lombok.Builder;
+
 import lombok.Data;
 import lombok.NonNull;
-import org.springframework.context.annotation.Bean;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
