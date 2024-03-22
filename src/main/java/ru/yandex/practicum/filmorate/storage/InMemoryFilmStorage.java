@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@Data
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int id;
@@ -22,10 +24,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         return id;
     }
 
-    public Collection<Film> getFilms() {
+    public Collection<Film> getAllFilms() {
         return films.values();
     }
-
+    public Film getFilmById(long id) {
+        return films.get(id);
+    }
     public Film createFilm(Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_DAY)) {
             film.setId(generateId());
