@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
@@ -37,19 +38,32 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        return filmStorage.getFilmById(id);
+        Film film = filmStorage.getFilmById(id);
+        if (film != null) {
+            return film;
+        } else {
+            throw new FilmNotFoundException("Данный фильм не зарегистрирован");
+        }
     }
 
-    public Film addLike(long filmId, long id) {
-        Film film = filmStorage.getFilms().get(filmId);
-        film.addLike(id);
-        return film;
+    public Film addLike(long filmdId, long id) {
+        Film likedFilm = filmStorage.getFilms().get(filmdId);
+        if (likedFilm != null) {
+            likedFilm.addLike(id);
+            return likedFilm;
+        } else {
+            throw new FilmNotFoundException("Данный фильм не зарегистрирован");
+        }
     }
 
     public Film deleteLike(long filmId, long id) {
-        Film film = filmStorage.getFilms().get(filmId);
-        film.deleteLike(id);
-        return film;
+        Film likedFilm = filmStorage.getFilms().get(filmId);
+        if (likedFilm != null) {
+            likedFilm.deleteLike(id);
+            return likedFilm;
+        } else {
+            throw new FilmNotFoundException("Данный фильм не зарегистрирован");
+        }
     }
 
     public Collection<Film> getPopularFilms(int count) {

@@ -22,18 +22,17 @@ class FilmControllerTest {
 
     @BeforeAll
     static void createFilms() {
-        firstFilm = Film.builder()
-                .name("Film 1")
-                .description("Description 1")
-                .releaseDate(LocalDate.of(2022, 1, 1))
-                .duration(120)
-                .build();
-        secondFilm = Film.builder()
-                .name("Film 2")
-                .description("Description 2")
-                .releaseDate(LocalDate.of(2022, 2, 1))
-                .duration(90)
-                .build();
+        firstFilm = new Film();
+        firstFilm.setName("Film 1");
+        firstFilm.setDescription("Description 1");
+        firstFilm.setReleaseDate(LocalDate.of(2022, 1, 1));
+        firstFilm.setDuration(120);
+
+        secondFilm = new Film();
+        secondFilm.setName("Film 2");
+        secondFilm.setDescription("Description 2");
+        secondFilm.setReleaseDate(LocalDate.of(2022, 2, 1));
+        secondFilm.setDuration(90);
     }
 
     @BeforeEach
@@ -56,21 +55,21 @@ class FilmControllerTest {
 
         Film[] filmsArray = getEntity.getBody();
         assertTrue(filmsArray.length >= 2);
-        assertEquals("Film(id=1, name=Film 1, description=Description 1, releaseDate=2022-01-01, duration=120)",
+        assertEquals("Film(id=1, name=Film 1, description=Description 1, releaseDate=2022-01-01, duration=120, likes=[])",
                 filmsArray[0].toString());
-        assertEquals("Film(id=2, name=Film 2, description=Description 2, releaseDate=2022-02-01, duration=90)",
+        assertEquals("Film(id=2, name=Film 2, description=Description 2, releaseDate=2022-02-01, duration=90, likes=[])",
                 filmsArray[1].toString());
     }
 
     @Test
     void createFilmTest() {
-        Film thirdFilm = Film.builder()
-                .name("Film 3")
-                .description("Description 3")
-                .releaseDate(LocalDate.of(2022, 3, 1))
-                .duration(100)
-                .build();
-        String thirdFilmToString = "Film(id=3, name=Film 3, description=Description 3, releaseDate=2022-03-01, duration=100)";
+        Film thirdFilm = new Film();
+        thirdFilm.setName("Film 3");
+        thirdFilm.setDescription("Description 3");
+        thirdFilm.setReleaseDate(LocalDate.of(2022, 3, 1));
+        thirdFilm.setDuration(100);
+
+        String thirdFilmToString = "Film(id=3, name=Film 3, description=Description 3, releaseDate=2022-03-01, duration=100, likes=[])";
         ResponseEntity<Film> entity = template.postForEntity("/films", thirdFilm, Film.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         Film createdFilm = entity.getBody();
@@ -84,65 +83,65 @@ class FilmControllerTest {
 
     @Test
     void createFilmWithFailNameTest() {
-        Film thirdFilmFailName = Film.builder()
-                .name("")
-                .description("Description 3")
-                .releaseDate(LocalDate.of(2022, 3, 1))
-                .duration(100)
-                .build();
+        Film thirdFilmFailName = new Film();
+        thirdFilmFailName.setName("");
+        thirdFilmFailName.setDescription("Description 3");
+        thirdFilmFailName.setReleaseDate(LocalDate.of(2022, 3, 1));
+        thirdFilmFailName.setDuration(100);
+
         ResponseEntity<Film> failNameEntity = template.postForEntity("/films", thirdFilmFailName, Film.class);
         assertEquals(HttpStatus.BAD_REQUEST, failNameEntity.getStatusCode());
     }
 
     @Test
     void createFilmWithFailDescription() {
-        Film thirdFilmFailDescription = Film.builder()
-                .name("Film 3")
-                .description("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
-                        "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " +
-                        "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», " +
-                        "стал кандидатом Коломбани.")
-                .releaseDate(LocalDate.of(2022, 3, 1))
-                .duration(100)
-                .build();
+        Film thirdFilmFailDescription = new Film();
+        thirdFilmFailDescription.setName("Film 3");
+        thirdFilmFailDescription.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
+                "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " +
+                "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», " +
+                "стал кандидатом Коломбани.");
+        thirdFilmFailDescription.setReleaseDate(LocalDate.of(2022, 3, 1));
+        thirdFilmFailDescription.setDuration(100);
+
         ResponseEntity<Film> failDescriptionEntity = template.postForEntity("/films", thirdFilmFailDescription, Film.class);
         assertEquals(HttpStatus.BAD_REQUEST, failDescriptionEntity.getStatusCode());
     }
 
     @Test
     void createFilmWithFailReleaseDate() {
-        Film thirdFilmFailReleaseDate = Film.builder()
-                .name("Film 3")
-                .description("Description 3")
-                .releaseDate(LocalDate.of(1890, 3, 25))
-                .duration(100)
-                .build();
+        Film thirdFilmFailReleaseDate = new Film();
+        thirdFilmFailReleaseDate.setName("Film 3");
+        thirdFilmFailReleaseDate.setDescription("Description 3");
+        thirdFilmFailReleaseDate.setReleaseDate(LocalDate.of(1890, 3, 25));
+        thirdFilmFailReleaseDate.setDuration(100);
+
         ResponseEntity<Film> failReleaseDateEntity = template.postForEntity("/films", thirdFilmFailReleaseDate, Film.class);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, failReleaseDateEntity.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, failReleaseDateEntity.getStatusCode());
     }
 
     @Test
     void createFilmWithFailDuration() {
-        Film thirdFilmFailDuration = Film.builder()
-                .name("Film 3")
-                .description("Description 3")
-                .releaseDate(LocalDate.of(2022, 3, 1))
-                .duration(-200)
-                .build();
+        Film thirdFilmFailDuration = new Film();
+        thirdFilmFailDuration.setName("Film 3");
+        thirdFilmFailDuration.setDescription("Description 3");
+        thirdFilmFailDuration.setReleaseDate(LocalDate.of(2022, 3, 1));
+        thirdFilmFailDuration.setDuration(-200);
+
         ResponseEntity<Film> failDuration = template.postForEntity("/films", thirdFilmFailDuration, Film.class);
         assertEquals(HttpStatus.BAD_REQUEST, failDuration.getStatusCode());
     }
 
     @Test
     void updateFilmTest() {
-        Film newFilm = Film.builder()
-                .id(2)
-                .name("Film 2.1")
-                .description("Description 2.1")
-                .releaseDate(LocalDate.of(2022, 2, 1))
-                .duration(200)
-                .build();
-        String newFilmToString = "Film(id=2, name=Film 2.1, description=Description 2.1, releaseDate=2022-02-01, duration=200)";
+        Film newFilm = new Film();
+        newFilm.setId(2);
+        newFilm.setName("Film 2.1");
+        newFilm.setDescription("Description 2.1");
+        newFilm.setReleaseDate(LocalDate.of(2022, 2, 1));
+        newFilm.setDuration(200);
+
+        String newFilmToString = "Film(id=2, name=Film 2.1, description=Description 2.1, releaseDate=2022-02-01, duration=200, likes=[])";
         HttpEntity<Film> requestEntity = new HttpEntity<>(newFilm);
         ResponseEntity<Film> entity = template.exchange("/films", HttpMethod.PUT, requestEntity, Film.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());

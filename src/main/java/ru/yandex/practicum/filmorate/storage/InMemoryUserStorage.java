@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -55,7 +56,7 @@ public class InMemoryUserStorage implements UserStorage {
             return user;
         } else {
             log.debug("Переданный в запросе пользователь не зарегистрирован");
-            throw new ValidationException("Данный пользователь не зарегистрирован!");
+            throw new UserNotFoundException("Данный пользователь не зарегистрирован!");
         }
     }
 

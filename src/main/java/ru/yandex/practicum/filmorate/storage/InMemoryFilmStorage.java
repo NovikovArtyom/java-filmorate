@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ValidationException;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Component
 @Data
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
     private int id;
     private static final LocalDate CINEMA_DAY = LocalDate.of(1895, 12, 28);
 
@@ -46,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("Данные фильма {} обновлены", film.getName());
             return film;
         } else
-            throw new ValidationException("Фильм не зарегистрирован или указанная дата релиза раньше 28 декабря 1895 года!");
+            throw new FilmNotFoundException("Фильм не зарегистрирован или указанная дата релиза раньше 28 декабря 1895 года!");
     }
 
     public void clearFilms() {

@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class Film {
     @NonNull
-    private int id;
+    private long id;
     @NotBlank
     private String name;
     @Size(max = 200)

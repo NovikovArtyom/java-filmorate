@@ -3,12 +3,16 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.util.Collection;
 
 @Slf4j
@@ -31,10 +35,14 @@ public class FilmController {
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
         log.debug("Получен GET запрос на эндпоинт /films/{id}");
-        return filmService.getFilmById(id);
+        if (id > 0) {
+            return filmService.getFilmById(id);
+        } else {
+            throw new ValidationException("Передан неправильный параметр id");
+        }
     }
 
-    @GetMapping("/popular?count={count}")
+    @GetMapping("/popular")
     public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10", required = false) int count) {
         log.debug("Получен GET запрос на эндпоинт /films/popular?count={count}");
         return filmService.getPopularFilms(count);
@@ -49,13 +57,17 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.debug("Получен PUT запрос на эндпоинт /films");
-        return filmService.updateFilm(film);
+            return filmService.updateFilm(film);
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public Film addLike(@PathVariable long id, @PathVariable long filmId) {
+    @PutMapping("/{filmdId}/like/{id}")
+    public Film addLike(@PathVariable long filmdId, @PathVariable long id) {
         log.debug("Получен PUT запрос на эндпоинт /films/{id}/like/{userId}");
-        return filmService.addLike(id, filmId);
+        if (filmdId > 0 && id > 0) {
+            return filmService.addLike(filmdId, id);
+        } else {
+            throw new ValidationException("Переданы неправильные параметр id и filmdId");
+        }
     }
 
     @DeleteMapping
@@ -64,9 +76,29 @@ public class FilmController {
         filmService.clearFilms();
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
-    public Film deleteLike(@PathVariable long id, @PathVariable long userId) {
+    @DeleteMapping("/{filmdId}/like/{id}")
+    public Film deleteLike(@PathVariable long filmdId, @PathVariable long id) {
         log.debug("Получен DELETE запрос на эндпоинт /films");
-        return filmService.deleteLike(id, userId);
+        if (filmdId > 0 && id > 0) {
+            return filmService.addLike(filmdId, id);
+        } else {
+            throw new ValidationException("Переданы неправильные параметр id и filmdId");
+        }
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handle(final ValidationException e) {
+        return new ErrorResponse(
+                "error: ", "Ошибка валидации"
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handle(final FilmNotFoundException e) {
+        return new ErrorResponse(
+                "error: ", "Данный фильм не зарегистрирован"
+        );
     }
 }
