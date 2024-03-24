@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -14,8 +14,8 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@Data
 public class InMemoryFilmStorage implements FilmStorage {
+    @Getter
     private final Map<Long, Film> films = new HashMap<>();
     private int id;
     private static final LocalDate CINEMA_DAY = LocalDate.of(1895, 12, 28);
