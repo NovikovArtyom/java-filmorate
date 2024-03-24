@@ -1,18 +1,21 @@
-package ru.yandex.practicum.filmorate.services;
+package ru.yandex.practicum.filmorate.storage;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Service
-public class UserService {
-    private final Map<Integer, User> users = new HashMap<>();
+@Component
+public class InMemoryUserStorage implements UserStorage {
+
+    @Getter
+    private final Map<Long, User> users = new HashMap<>();
     private int id;
 
     private int generateId() {
@@ -20,7 +23,11 @@ public class UserService {
         return id;
     }
 
-    public Collection<User> getUsers() {
+    public User getUserById(long id) {
+        return users.get(id);
+    }
+
+    public Collection<User> getAllUsers() {
         return users.values();
     }
 
@@ -46,11 +53,11 @@ public class UserService {
             return user;
         } else {
             log.debug("Переданный в запросе пользователь не зарегистрирован");
-            throw new ValidationException("Данный пользователь не зарегистрирован!");
+            throw new UserNotFoundException("Данный пользователь не зарегистрирован!");
         }
     }
 
-    public void clearFilms() {
+    public void clearUsers() {
         users.clear();
         this.id = 0;
         log.debug("Данные обо всех пользователях удалены!");
